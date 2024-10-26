@@ -46,6 +46,51 @@ pip3 install icalendar uuid json
     ]
 }
 ```
+更改完的json应该像这样：
+```json
+{
+    "year": 2024, 
+    "month": 10,
+    "day": 13,
+    "data": [
+        {
+            "week": 1,
+            "data": [
+                {
+                    "code": 200,
+                    "msg": "ok",
+                    "data": [
+                        {
+                            "day": 7,
+                            "curriculumList": [
+                                {
+                                    "endClassTime": null,
+                                    "hasClass": false,
+                                    "classroom": null,
+                                    "courseTypes": null,
+                                    "fromClass": 1,
+                                    "startClassTime": null,
+                                    "fromWeek": null,
+                                    "sectionPlan": null,
+                                    "classCount": 1,
+                                    "teacher": null,
+                                    "endClass": null,
+                                    "name": null,
+                                    "endWeek": null,
+                                    "day": 7
+                                },
+                    ......
+            ]
+        },
+        {
+            "week": 2,
+            "data": [
+                ......
+            ]
+        }
+    ]
+}          
+```
 更改完json之后，运行`main.py`，Python版本的话我本地是3.13.0，没有测试过其他版本。运行顺利的话会出现`all.ics`这个日历文件，但还需要处理。用文本编辑器打开`head.ics`和`all.ics`，将`all.ics`的这一些内容替换成`head.ics`的所有内容：
 ```ics
 BEGIN:VCALENDAR
