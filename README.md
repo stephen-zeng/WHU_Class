@@ -24,5 +24,8 @@ pip3 install icalendar uuid uncurl datetime requests
 
 
 # 2. 日历的生成
-### 运行`main.py`，输入获取的cURL,开始日期（周日）和结束日期（周日），测试用的Python版本`3.13.0`和`3.11.9`，没有测试过其他版本，理论可行。运行顺利的话会出现`calendar.ics`这个日历文件。
+### 运行`main.py`，输入获取的cURL，开始日期（周日）和结束日期（周日），测试用的Python版本`3.13.0`和`3.11.9`，没有测试过其他版本，理论可行。运行顺利的话会出现`calendar.ics`这个日历文件。
+
+![3.gif](guidance/3.gif)
+
 ### 恭喜！你可以将`calendar.ics`用Apple设备打开了。理论上，所有支持通用日历文件的APP都可以使用。
