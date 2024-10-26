@@ -18,9 +18,6 @@ def get_json():
     
     headers, cookies = curl_convert()
 
-    print(headers)
-    print(cookies)
-
     start_date = input("请输入开始日期 (格式: YYYY-MM-DD): ")
     end_date = input("请输入结束日期 (格式: YYYY-MM-DD): ")
     date_range = list(get_date_range(start_date, end_date))
