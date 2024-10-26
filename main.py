@@ -2,7 +2,7 @@ from icalendar import Calendar, Event
 import uuid
 import json
 
-with open('overall.json', 'r') as zongbiao:
+with open('all.json', 'r') as zongbiao:
     KeBiao = json.load(zongbiao)
     allkb = KeBiao['data']
 
@@ -18,6 +18,7 @@ days = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 year = KeBiao['year']
 month = KeBiao['month']
 wkday = KeBiao['day']
+wkday = wkday - 7
 
 for week in allkb:
     wkday = wkday + 7
