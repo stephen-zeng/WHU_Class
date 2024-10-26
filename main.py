@@ -55,9 +55,41 @@ for week in allkb:
             event.add('LOCATION', classroom)
             cal.add_component(event)
 
-f = open('all.ics', 'wb')
+f = open('calendar.ics', 'wb')
 f.write(cal.to_ical())
 f.close()
 
+# 要插入的内容
+new_content = """BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+PRODID:-//Apple Inc.//macOS 15.2//EN
+VERSION:2.0
+X-APPLE-CALENDAR-COLOR:#CC73E1
+BEGIN:VTIMEZONE
+TZID:Asia/Shanghai
+BEGIN:STANDARD
+DTSTART:19890917T020000
+RRULE:FREQ=YEARLY;UNTIL=19910914T170000Z;BYMONTH=9;BYDAY=3SU
+TZNAME:GMT+8
+TZOFFSETFROM:+0900
+TZOFFSETTO:+0800
+END:STANDARD
+BEGIN:DAYLIGHT
+DTSTART:19910414T020000
+RDATE:19910414T020000
+TZNAME:GMT+8
+TZOFFSETFROM:+0800
+TZOFFSETTO:+0900
+END:DAYLIGHT
+END:VTIMEZONE
+"""
 
-        
+with open('calendar.ics', 'r', encoding='utf-8') as file:
+    lines = file.readlines()
+
+updated_lines = new_content.splitlines(keepends=True) + lines[5:]
+
+with open('calendar.ics', 'w', encoding='utf-8') as file:
+    file.writelines(updated_lines)
+
+print("calendar.ics创建成功！")
