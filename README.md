@@ -6,10 +6,11 @@
 + uuid
 + json
 + datetime
++ requests
 
 ### 安装命令：
 ```
-pip3 install icalendar uuid json datetime
+pip3 install icalendar uuid json datetime requests
 ```
 # cookie和headers的获取
 ### 用电脑打开[智慧珞珈的手机版](https://zhlj.whu.edu.cn/mobile/curriculum)，登录`zhlj.whu.edu.cn`之后，按`F12`打开开发者控制台，然后切换模拟设备为一台手机，看下面的GIF。
