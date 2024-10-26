@@ -18,3 +18,5 @@ def curl_convert():
 
 	headers = json.loads(json.dumps(context.headers))
 	cookies = json.loads(json.dumps(context.cookies))
+
+	return headers, cookies
