@@ -2,6 +2,8 @@ import uncurl
 import json
 
 def curl_convert():
+	print("请输入curl：")
+
 	curl = ""
 
 	while True:
