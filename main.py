@@ -2,7 +2,7 @@ from icalendar import Calendar, Event
 import uuid
 import json
 
-with open('all.json', 'r') as zongbiao:
+with open('all.json', 'r', encoding="utf-8") as zongbiao:
     KeBiao = json.load(zongbiao)
     allkb = KeBiao['data']
 
