@@ -1,14 +1,14 @@
 # 介绍
 ### 这个半自动代码可以帮助你将妮呜WHU的课表导入日历中统一管理
 
-# 需要安装的包
+# 0.需要安装的依赖
 + icalendar
 + uuid
 + json
 + datetime
 + requests
 
-### 0.安装命令：
+### 安装命令：
 ```
 pip3 install icalendar uuid json datetime requests
 ```
