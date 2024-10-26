@@ -1,6 +1,9 @@
 from icalendar import Calendar, Event
+from get_calendar import get_json
 import uuid
 import json
+
+get_json()
 
 with open('calendar.json', 'r', encoding="utf-8") as zongbiao:
     KeBiao = json.load(zongbiao)

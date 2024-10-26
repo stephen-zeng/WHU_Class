@@ -22,13 +22,8 @@ pip3 install icalendar uuid json datetime requests
 ### 刷新页面，在控制台找到`getCurriculumData?data=`，右键选择复制为`cURL(bash)`
 ![alt text](guidance/image.png)
 
-### 将其复制到[curlconverter](https://curlconverter.com/python/)得到需要的cookie和headers
+### 将其复制到[curlconverter](https://curlconverter.com/python/)得到需要的cookie和headers，然后将cookie和headers按照格式复制到`get_calendar.py`中
 
-# 2. 课表的获取
-### 将cookie和headers填入`get_calendar.py`,并运行，输入开始日期（周日）和结束日期（周日），得到`calendar.json`
-
-### 
-
-# 3. 日历的生成
-### 运行`main.py`，测试用的Python版本`3.13.0`，没有测试过其他版本。运行顺利的话会出现`calendar.ics`这个日历文件。
+# 2. 日历的生成
+### 运行`main.py`，输入开始日期（周日）和结束日期（周日），测试用的Python版本`3.13.0`，没有测试过其他版本，理论可行。运行顺利的话会出现`calendar.ics`这个日历文件。
 ### 恭喜！你可以将`calendar.ics`用Apple设备打开了。理论上，所有支持通用日历文件的APP都可以使用。
