@@ -1,13 +1,7 @@
 import requests
 import json
 from datetime import datetime, timedelta
-
-# 从cookies&headers.json中提取cookie和header
-with open('cookies&headers.json', 'r', encoding="utf-8") as f:
-    cookies_and_headers = json.load(f)
-    cookies = cookies_and_headers['cookies']
-    headers = cookies_and_headers['headers']
-
+from curl_convert import curl_convert
 
 # 函数用于生成两个日期之间的所有日期
 def get_date_range(start_date, end_date):
@@ -21,6 +15,9 @@ def get_date_range(start_date, end_date):
         current += delta
 
 def get_json():
+    
+    headers, cookies = curl_convert()
+
     start_date = input("请输入开始日期 (格式: YYYY-MM-DD): ")
     end_date = input("请输入结束日期 (格式: YYYY-MM-DD): ")
     date_range = list(get_date_range(start_date, end_date))
