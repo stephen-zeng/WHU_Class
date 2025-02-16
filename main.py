@@ -17,7 +17,15 @@ cal.add('X-WR-TIMEZONE','Asia/Shanghai')
 
 bgtime = ['0','080000','085000','095000','104000','113000','140500','145500','154500','164000','173000','183000','192000','201000']
 edtime = ['0','084500','093500','103500','112500','121500','145000','154000','163000','172500','181500','191500','200500','205500']
-days = [0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
+
+# 月份天数（考虑闰年）
+def is_leap_year(year):
+    """判断是否为闰年"""
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
+
+days_in_month = [0, 31, 29 if is_leap_year(KeBiao['year']) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+
 year = KeBiao['year']
 month = KeBiao['month']
 wkday = KeBiao['day']
@@ -25,8 +33,8 @@ wkday = wkday - 7
 
 for week in allkb:
     wkday = wkday + 7
-    if (wkday > days[month]):
-        wkday = wkday - days[month]
+    if (wkday > days_in_month[month]):
+        wkday = wkday - days_in_month[month]
         month = month + 1 
         if (month > 12):
             month = 1
