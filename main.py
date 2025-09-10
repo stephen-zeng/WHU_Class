@@ -38,6 +38,7 @@ for week in allkb:
         month = month + 1 
         if (month > 12):
             month = 1
+            year = year + 1
     strday = "%02d" % wkday
     strmonth = "%02d" % month
     basedate = int(str(year) + strmonth + strday)
