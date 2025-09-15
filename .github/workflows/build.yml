@@ -14,12 +14,10 @@ jobs:
           - goos: linux
             goarch: amd64
             cc: x86_64-linux-musl-gcc
-            cgo_ldflags: "-static"
             ext: ""
           - goos: linux
             goarch: arm64
             cc: aarch64-linux-musl-gcc
-            cgo_ldflags: "-static"
             ext: ""
           - goos: windows
             goarch: amd64
