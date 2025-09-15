@@ -1,0 +1,133 @@
+name: Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-linux-windows:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            cc: x86_64-linux-musl-gcc
+            cgo_ldflags: "-static"
+            ext: ""
+          - goos: linux
+            goarch: arm64
+            cc: aarch64-linux-musl-gcc
+            cgo_ldflags: "-static"
+            ext: ""
+          - goos: windows
+            goarch: amd64
+            cc: x86_64-w64-mingw32-gcc
+            cgo_ldflags: ""
+            ext: ".exe"
+          - goos: windows
+            goarch: arm64
+            cc: aarch64-w64-mingw32-gcc
+            cgo_ldflags: ""
+            ext: ".exe"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install cross toolchains
+        run: |
+          set -e
+          sudo apt-get update
+          sudo apt-get install -y musl-tools gcc-mingw-w64 clang lld wget tar xz-utils unzip
+          wget -q https://github.com/troglobit/misc/releases/download/11-20211120/aarch64-linux-musl-cross.tgz
+          tar -xzf aarch64-linux-musl-cross.tgz
+          echo "$PWD/aarch64-linux-musl-cross/bin" >> $GITHUB_PATH
+          wget -q https://github.com/mstorsjo/llvm-mingw/releases/download/20250430/llvm-mingw-20250430-ucrt-ubuntu-22.04-x86_64.tar.xz
+          tar -xf llvm-mingw-20250430-ucrt-ubuntu-22.04-x86_64.tar.xz
+          echo "$PWD/llvm-mingw-20250430-ucrt-ubuntu-22.04-x86_64/bin" >> $GITHUB_PATH
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 1
+          CC: ${{ matrix.cc }}
+          CGO_LDFLAGS: ${{ matrix.cgo_ldflags }}
+        run: |
+          mkdir -p bin
+          go build -o bin/WHU_Class_${GOOS}_${GOARCH}${{ matrix.ext }} .
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: WHU_Class-binaries-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: bin/
+
+  build-macos:
+    runs-on: macos-14
+    strategy:
+      matrix:
+        include:
+          - goos: darwin
+            goarch: amd64
+            cc: "clang -arch x86_64"
+            ext: ""
+          - goos: darwin
+            goarch: arm64
+            cc: clang
+            ext: ""
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build ${{ matrix.goos }}/${{ matrix.goarch }}
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
+          CGO_ENABLED: 1
+          CC: ${{ matrix.cc }}
+        run: |
+          mkdir -p bin
+          go build -o bin/WHU_Class_${GOOS}_${GOARCH}${{ matrix.ext }} .
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: WHU_Class-binaries-${{ matrix.goos }}-${{ matrix.goarch }}
+          path: bin/
+
+  release:
+    needs: [build-linux-windows, build-macos]
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Display downloaded files
+        run: ls -R dist
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/**/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
