@@ -260,6 +260,14 @@ func CreateCalendar(classInfos []ClassDetail) {
 }
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Println("程序出错:", r)
+			fmt.Println("请检查输入的cURL是否正确，或在github中反馈问题。")
+			fmt.Println("按回车键退出...")
+			fmt.Scanln()
+		}
+	}()
 	var curl string
 	for {
 		curl = input()
@@ -273,4 +281,6 @@ func main() {
 	classDetail := PhraseClassInfo(kbListResp)
 	CreateCalendar(classDetail)
 	fmt.Println("日历文件已生成，文件名为calendar.ics")
+	fmt.Println("按回车键退出...")
+	fmt.Scanln()
 }
