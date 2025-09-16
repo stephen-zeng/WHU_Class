@@ -231,7 +231,7 @@ func GetClassTime(week, day, classStart, classEnd int) (start, end time.Time) {
 }
 
 func CreateCalendar(classInfos []ClassDetail) {
-	fmt.Println("请输入第一周的星期日的日期，格式为YYYY-MM-DD: ")
+	fmt.Println("请输入第一周的星期日的日期（一周的开始从周日开始计算），格式为YYYY-MM-DD: ")
 	reader := bufio.NewReader(os.Stdin)
 	timeInput, _ := reader.ReadString('\n')
 	var year, month, day int

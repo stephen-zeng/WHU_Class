@@ -318,15 +318,15 @@
             <div class="card-content">
                 <div class="card-header">
                     <span class="card-icon"></span>
-                    <h3>使用说明</h3>
+                    <h3>使用说明<a href="https://github.com/stephen-zeng/WHU_Class/blob/main/README.md">（详细说明）</a>></h3>
                 </div>
                 <ol>
                     <li>进入本科教务系统的个人课表查询页面</li>
                     <li>打开浏览器开发者工具（F12），切换到 Network 选项卡</li>
                     <li>点击查询课表，完成验证码验证</li>
-                    <li>在 Network 选项卡找到课表数据请求，右键选择 "Copy as cURL"</li>
+                    <li>在 Network 选项卡找到课表数据请求(xskbcx_cxXsgrkb.html?gnmkdm=...)，右键选择 "Copy as cURL"</li>
                     <li>将完整的 cURL 命令粘贴到下方文本框中</li>
-                    <li>选择第一周星期日的日期</li>
+                    <li>选择第一周星期日的日期（一周的开始从周日开始计算）</li>
                     <li>点击生成日历文件</li>
                 </ol>
             </div>
@@ -354,7 +354,7 @@
                         <h3>步骤2：选择开始日期</h3>
                     </div>
                     <div class="md-textfield">
-                        <label class="textfield-label" for="firstSunday">第一周星期日日期</label>
+                        <label class="textfield-label" for="firstSunday">第一周星期日日期（一周的开始从周日开始计算）</label>
                         <input
                             id="firstSunday"
                             class="textfield-input"
