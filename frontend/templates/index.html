@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WHU课表转日历</title>
+    <style>
+        :root {
+            --md-primary-color: #1976d2;
+            --md-primary-dark: #1565c0;
+            --md-primary-light: #42a5f5;
+            --md-surface-color: #ffffff;
+            --md-surface-variant: #f5f5f5;
+            --md-outline: #e0e0e0;
+            --md-outline-variant: #f0f0f0;
+            --md-shadow: rgba(0, 0, 0, 0.12);
+            --md-text-primary: #212121;
+            --md-text-secondary: #757575;
+            --md-success: #4caf50;
+            --md-error: #f44336;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--md-surface-variant);
+            color: var(--md-text-primary);
+            line-height: 1.5;
+        }
+
+        .main-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .hero-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .hero-icon {
+            font-size: 64px;
+            color: var(--md-primary-color);
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .hero-icon::before {
+            content: "🎓";
+        }
+
+        h1 {
+            margin: 0 0 16px 0;
+            font-size: 2.5rem;
+            font-weight: 400;
+            color: var(--md-text-primary);
+        }
+
+        .hero-subtitle {
+            color: var(--md-text-secondary);
+            font-size: 1.1rem;
+            margin: 0;
+        }
+
+        .md-card {
+            background: var(--md-surface-color);
+            border-radius: 16px;
+            box-shadow: 0 2px 8px var(--md-shadow);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-icon {
+            margin-right: 12px;
+            color: var(--md-primary-color);
+            font-size: 24px;
+        }
+
+        .card-icon::before {
+            content: "❓";
+        }
+
+        .card-icon.terminal::before {
+            content: "💻";
+        }
+
+        .card-icon.calendar::before {
+            content: "📅";
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        ol {
+            padding-left: 20px;
+            line-height: 1.8;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .form-section {
+            margin-bottom: 24px;
+        }
+
+        .md-textfield {
+            width: 100%;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .textfield-label {
+            display: block;
+            font-size: 1rem;
+            color: var(--md-text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .textfield-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--md-outline);
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            background: var(--md-surface-color);
+            transition: border-color 0.2s ease;
+        }
+
+        .textfield-input:focus {
+            outline: none;
+            border-color: var(--md-primary-color);
+        }
+
+        .textfield-input.textarea {
+            min-height: 120px;
+            resize: vertical;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .md-button {
+            background: var(--md-primary-color);
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .md-button:hover {
+            background: var(--md-primary-dark);
+            box-shadow: 0 4px 12px var(--md-shadow);
+        }
+
+        .md-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .md-button.tonal {
+            background: var(--md-primary-light);
+            color: white;
+        }
+
+        .md-button-icon {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+        .md-button-icon.download::before {
+            content: "⬇️";
+        }
+
+        .md-button-icon.loading::before {
+            content: "⏳";
+        }
+
+        .md-button-icon.check::before {
+            content: "✅";
+        }
+
+        .loading-card {
+            text-align: center;
+            padding: 32px;
+        }
+
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid var(--md-outline);
+            border-top: 4px solid var(--md-primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-section {
+            margin-top: 24px;
+        }
+
+        .success-header, .error-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .success-icon::before {
+            content: "✅";
+            font-size: 24px;
+            margin-right: 12px;
+            color: var(--md-success);
+        }
+
+        .error-icon::before {
+            content: "❌";
+            font-size: 24px;
+            margin-right: 12px;
+            color: var(--md-error);
+        }
+
+        .class-items {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+
+        .class-item {
+            background: var(--md-surface-variant);
+            padding: 16px;
+            margin: 8px 0;
+            border-radius: 12px;
+            border-left: 4px solid var(--md-primary-color);
+        }
+
+        .class-title {
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            color: var(--md-text-primary);
+        }
+
+        .class-details {
+            color: var(--md-text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .class-details > div {
+            margin-bottom: 4px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .main-container {
+                padding: 16px;
+            }
+            
+            .card-content {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <span class="hero-icon"></span>
+            <h1>WHU课表转日历工具</h1>
+            <p class="hero-subtitle">将武汉大学课表快速转换为日历文件，轻松导入各种日历应用</p>
+        </div>
+
+        <!-- Instructions Card -->
+        <div class="md-card">
+            <div class="card-content">
+                <div class="card-header">
+                    <span class="card-icon"></span>
+                    <h3>使用说明</h3>
+                </div>
+                <ol>
+                    <li>进入本科教务系统的个人课表查询页面</li>
+                    <li>打开浏览器开发者工具（F12），切换到 Network 选项卡</li>
+                    <li>点击查询课表，完成验证码验证</li>
+                    <li>在 Network 选项卡找到课表数据请求，右键选择 "Copy as cURL"</li>
+                    <li>将完整的 cURL 命令粘贴到下方文本框中</li>
+                    <li>选择第一周星期日的日期</li>
+                    <li>点击生成日历文件</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <form id="calendarForm">
+            <div class="md-card">
+                <div class="card-content">
+                    <div class="card-header">
+                        <span class="card-icon terminal"></span>
+                        <h3>步骤1：输入cURL命令</h3>
+                    </div>
+                    <div class="md-textfield">
+                        <label class="textfield-label" for="curlCommand">完整cURL命令</label>
+                        <textarea
+                            id="curlCommand"
+                            class="textfield-input textarea"
+                            placeholder="请粘贴从浏览器复制的完整cURL命令..."
+                            required></textarea>
+                    </div>
+                    
+                    <div class="card-header">
+                        <span class="card-icon calendar"></span>
+                        <h3>步骤2：选择开始日期</h3>
+                    </div>
+                    <div class="md-textfield">
+                        <label class="textfield-label" for="firstSunday">第一周星期日日期</label>
+                        <input
+                            id="firstSunday"
+                            class="textfield-input"
+                            type="date"
+                            required>
+                    </div>
+                    
+                    <button id="submitBtn" class="md-button" type="submit">
+                        <span class="md-button-icon download"></span>
+                        生成日历文件
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <!-- Loading Section -->
+        <div id="loadingSection" class="hidden">
+            <div class="md-card">
+                <div class="loading-card">
+                    <div class="loading-spinner"></div>
+                    <p>正在处理课表数据，请稍候...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Section -->
+        <div id="resultSection" class="result-section hidden">
+            <div class="md-card">
+                <div id="resultContent" class="card-content"></div>
+            </div>
+        </div>
+
+        <!-- Download Button -->
+        <div id="downloadSection" class="hidden">
+            <button id="downloadBtn" class="md-button tonal">
+                <span class="md-button-icon download"></span>
+                下载日历文件 (whu_calendar.ics)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let calendarData = '';
+        
+        // Set default first Sunday to next Sunday
+        function setDefaultFirstSunday() {
+            const today = new Date();
+            const nextSunday = new Date(today);
+            const daysUntilSunday = 7 - today.getDay();
+            if (daysUntilSunday === 7) {
+                nextSunday.setDate(today.getDate());
+            } else {
+                nextSunday.setDate(today.getDate() + daysUntilSunday);
+            }
+            
+            const year = nextSunday.getFullYear();
+            const month = String(nextSunday.getMonth() + 1).padStart(2, '0');
+            const day = String(nextSunday.getDate()).padStart(2, '0');
+            
+            document.getElementById('firstSunday').value = `${year}-${month}-${day}`;
+        }
+
+        function showLoading(show) {
+            const loadingSection = document.getElementById('loadingSection');
+            const resultSection = document.getElementById('resultSection');
+            const downloadSection = document.getElementById('downloadSection');
+            
+            if (show) {
+                loadingSection.classList.remove('hidden');
+                resultSection.classList.add('hidden');
+                downloadSection.classList.add('hidden');
+            } else {
+                loadingSection.classList.add('hidden');
+            }
+        }
+
+        function showResult(success, message, classData = null) {
+            const resultSection = document.getElementById('resultSection');
+            const resultContent = document.getElementById('resultContent');
+            const downloadSection = document.getElementById('downloadSection');
+            
+            let headerHtml = success 
+                ? '<div class="success-header"><span class="success-icon"></span><h3>生成成功！</h3></div>'
+                : '<div class="error-header"><span class="error-icon"></span><h3>生成失败</h3></div>';
+
+            let content = headerHtml + `<p>${message}</p>`;
+
+            if (success && classData && classData.length > 0) {
+                content += `
+                    <div style="margin-top: 24px;">
+                        <h4 style="margin-bottom: 16px;">发现的课程 (${classData.length} 门)</h4>
+                        <div class="class-items">
+                `;
+                
+                classData.forEach(cls => {
+                    content += `
+                        <div class="class-item">
+                            <div class="class-title">${cls.Title}</div>
+                            <div class="class-details">
+                                <div><strong>教师：</strong>${cls.Teacher}</div>
+                                <div><strong>地点：</strong>${cls.Place}</div>
+                                <div><strong>周数：</strong>${cls.Week.join(', ')}</div>
+                                <div><strong>时间：</strong>星期${cls.Day} 第${cls.StartTime}-${cls.EndTime}节</div>
+                                ${cls.PS ? `<div><strong>备注：</strong>${cls.PS}</div>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                content += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            resultContent.innerHTML = content;
+            resultSection.classList.remove('hidden');
+            
+            if (success) {
+                downloadSection.classList.remove('hidden');
+            }
+        }
+
+        // Form submission handler
+        document.getElementById('calendarForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const curlCommand = document.getElementById('curlCommand').value.trim();
+            const firstSunday = document.getElementById('firstSunday').value;
+            
+            if (!curlCommand || !firstSunday) {
+                showResult(false, '请填写所有必需字段');
+                return;
+            }
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="md-button-icon loading"></span>处理中...';
+            
+            showLoading(true);
+            
+            fetch('/api/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    curlCommand: curlCommand,
+                    firstSunday: firstSunday
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="md-button-icon download"></span>生成日历文件';
+                showLoading(false);
+                
+                if (data.success) {
+                    calendarData = data.calendar;
+                    showResult(true, data.message, data.classData);
+                } else {
+                    showResult(false, data.error || data.message);
+                }
+            })
+            .catch(error => {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span class="md-button-icon download"></span>生成日历文件';
+                showLoading(false);
+                showResult(false, `请求失败: ${error.message}`);
+            });
+        });
+        
+        // Download button handler
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            if (calendarData) {
+                const blob = new Blob([calendarData], { type: 'text/calendar' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'whu_calendar.ics';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Show success message
+                this.innerHTML = '<span class="md-button-icon check"></span>已下载';
+                setTimeout(() => {
+                    this.innerHTML = '<span class="md-button-icon download"></span>下载日历文件 (whu_calendar.ics)';
+                }, 2000);
+            }
+        });
+        
+        // Initialize
+        setDefaultFirstSunday();
+    </script>
+</body>
+</html>
