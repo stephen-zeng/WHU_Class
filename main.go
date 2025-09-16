@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -260,6 +261,34 @@ func CreateCalendar(classInfos []ClassDetail) {
 }
 
 func main() {
+	// Command line flags
+	var (
+		webMode = flag.Bool("web", false, "启动Web服务器模式")
+		port    = flag.Int("port", 8080, "Web服务器端口号")
+		help    = flag.Bool("h", false, "显示帮助信息")
+	)
+	flag.Parse()
+
+	if *help {
+		fmt.Println("WHU课表转日历工具")
+		fmt.Println()
+		fmt.Println("用法:")
+		fmt.Println("  ./whu_class            # 命令行模式（默认）")
+		fmt.Println("  ./whu_class -web       # Web服务器模式")
+		fmt.Println("  ./whu_class -web -port=9000  # 指定端口的Web服务器模式")
+		fmt.Println()
+		fmt.Println("选项:")
+		flag.PrintDefaults()
+		return
+	}
+
+	if *webMode {
+		// Web server mode
+		StartWebServer(*port)
+		return
+	}
+
+	// CLI mode (original functionality)
 	defer func() {
 		if r := recover(); r != nil {
 			fmt.Println("程序出错:", r)
