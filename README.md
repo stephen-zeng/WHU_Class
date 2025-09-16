@@ -35,10 +35,10 @@ go build -o whu_class
 ### Docker
 ```bash
 # amd64
-docker run -d --name whu-class -p %EXPOSE_PORT%:1111 0w0w0/whu-class:latest
+docker run -d --name whu-class -p %EXPOSE_PORT%:8080 0w0w0/whu-class:latest
 
 # arm64
-docker run -d --name whu-class -p %EXPOSE_PORT%:1111 0w0w0/whu-class-arm:latest
+docker run -d --name whu-class -p %EXPOSE_PORT%:8080 0w0w0/whu-class-arm:latest
 ```
 
 ### 运行模式
