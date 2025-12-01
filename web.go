@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"WHUClass/frontend"
+
 	ics "github.com/arran4/golang-ical"
 	"github.com/google/uuid"
 )
@@ -24,10 +25,10 @@ type WebRequest struct {
 
 // WebResponse represents the response to the frontend
 type WebResponse struct {
-	Success   bool   `json:"success"`
-	Message   string `json:"message"`
-	Calendar  string `json:"calendar,omitempty"`
-	Error     string `json:"error,omitempty"`
+	Success   bool          `json:"success"`
+	Message   string        `json:"message"`
+	Calendar  string        `json:"calendar,omitempty"`
+	Error     string        `json:"error,omitempty"`
 	ClassData []ClassDetail `json:"classData,omitempty"`
 }
 
@@ -38,7 +39,7 @@ func indexHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Template error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := tmpl.Execute(w, nil); err != nil {
 		http.Error(w, "Template execution error: "+err.Error(), http.StatusInternalServerError)
@@ -84,7 +85,7 @@ func generateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Set global basin time
-	basinTime = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
+	basinTime = time.Date(year, time.Month(month), day, 0, 0, 0, 0, cstZone)
 
 	// Get class data
 	kbListResp, err := getKBListSafe(req.CurlCommand)

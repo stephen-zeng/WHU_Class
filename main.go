@@ -186,38 +186,39 @@ END:DAYLIGHT
 END:VTIMEZONE
 `
 
+var cstZone = time.FixedZone("CST", 8*3600)
 var basinTime time.Time
 var startTimes = []time.Time{
-	time.Date(0, 0, 0, 0, 0, 0, 0, time.Local),
-	time.Date(0, 0, 0, 8, 0, 0, 0, time.Local),
-	time.Date(0, 0, 0, 8, 50, 0, 0, time.Local),
-	time.Date(0, 0, 0, 9, 50, 0, 0, time.Local),
-	time.Date(0, 0, 0, 10, 40, 0, 0, time.Local),
-	time.Date(0, 0, 0, 11, 30, 0, 0, time.Local),
-	time.Date(0, 0, 0, 14, 05, 0, 0, time.Local),
-	time.Date(0, 0, 0, 14, 55, 0, 0, time.Local),
-	time.Date(0, 0, 0, 15, 45, 0, 0, time.Local),
-	time.Date(0, 0, 0, 16, 40, 0, 0, time.Local),
-	time.Date(0, 0, 0, 17, 30, 0, 0, time.Local),
-	time.Date(0, 0, 0, 18, 30, 0, 0, time.Local),
-	time.Date(0, 0, 0, 19, 20, 0, 0, time.Local),
-	time.Date(0, 0, 0, 20, 10, 0, 0, time.Local),
+	time.Date(0, 0, 0, 0, 0, 0, 0, cstZone),
+	time.Date(0, 0, 0, 8, 0, 0, 0, cstZone),
+	time.Date(0, 0, 0, 8, 50, 0, 0, cstZone),
+	time.Date(0, 0, 0, 9, 50, 0, 0, cstZone),
+	time.Date(0, 0, 0, 10, 40, 0, 0, cstZone),
+	time.Date(0, 0, 0, 11, 30, 0, 0, cstZone),
+	time.Date(0, 0, 0, 14, 05, 0, 0, cstZone),
+	time.Date(0, 0, 0, 14, 55, 0, 0, cstZone),
+	time.Date(0, 0, 0, 15, 45, 0, 0, cstZone),
+	time.Date(0, 0, 0, 16, 40, 0, 0, cstZone),
+	time.Date(0, 0, 0, 17, 30, 0, 0, cstZone),
+	time.Date(0, 0, 0, 18, 30, 0, 0, cstZone),
+	time.Date(0, 0, 0, 19, 20, 0, 0, cstZone),
+	time.Date(0, 0, 0, 20, 10, 0, 0, cstZone),
 }
 var endTimes = []time.Time{
-	time.Date(0, 0, 0, 0, 0, 0, 0, time.Local),
-	time.Date(0, 0, 0, 8, 45, 0, 0, time.Local),
-	time.Date(0, 0, 0, 9, 35, 0, 0, time.Local),
-	time.Date(0, 0, 0, 10, 35, 0, 0, time.Local),
-	time.Date(0, 0, 0, 11, 25, 0, 0, time.Local),
-	time.Date(0, 0, 0, 12, 15, 0, 0, time.Local),
-	time.Date(0, 0, 0, 14, 50, 0, 0, time.Local),
-	time.Date(0, 0, 0, 15, 40, 0, 0, time.Local),
-	time.Date(0, 0, 0, 16, 30, 0, 0, time.Local),
-	time.Date(0, 0, 0, 17, 25, 0, 0, time.Local),
-	time.Date(0, 0, 0, 18, 15, 0, 0, time.Local),
-	time.Date(0, 0, 0, 19, 15, 0, 0, time.Local),
-	time.Date(0, 0, 0, 20, 05, 0, 0, time.Local),
-	time.Date(0, 0, 0, 20, 55, 0, 0, time.Local),
+	time.Date(0, 0, 0, 0, 0, 0, 0, cstZone),
+	time.Date(0, 0, 0, 8, 45, 0, 0, cstZone),
+	time.Date(0, 0, 0, 9, 35, 0, 0, cstZone),
+	time.Date(0, 0, 0, 10, 35, 0, 0, cstZone),
+	time.Date(0, 0, 0, 11, 25, 0, 0, cstZone),
+	time.Date(0, 0, 0, 12, 15, 0, 0, cstZone),
+	time.Date(0, 0, 0, 14, 50, 0, 0, cstZone),
+	time.Date(0, 0, 0, 15, 40, 0, 0, cstZone),
+	time.Date(0, 0, 0, 16, 30, 0, 0, cstZone),
+	time.Date(0, 0, 0, 17, 25, 0, 0, cstZone),
+	time.Date(0, 0, 0, 18, 15, 0, 0, cstZone),
+	time.Date(0, 0, 0, 19, 15, 0, 0, cstZone),
+	time.Date(0, 0, 0, 20, 05, 0, 0, cstZone),
+	time.Date(0, 0, 0, 20, 55, 0, 0, cstZone),
 }
 
 func GetClassTime(week, day, classStart, classEnd int) (start, end time.Time) {
@@ -236,7 +237,7 @@ func CreateCalendar(classInfos []ClassDetail) {
 	timeInput, _ := reader.ReadString('\n')
 	var year, month, day int
 	fmt.Sscanf(timeInput, "%d-%d-%d", &year, &month, &day)
-	basinTime = time.Date(year, time.Month(month), day, 0, 0, 0, 0, time.Local)
+	basinTime = time.Date(year, time.Month(month), day, 0, 0, 0, 0, cstZone)
 
 	cal := ics.NewCalendar()
 	for _, classInfo := range classInfos {
