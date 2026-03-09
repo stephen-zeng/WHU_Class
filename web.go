@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html"
 	"io"
 	"log"
 	"net/http"
@@ -132,6 +133,9 @@ func getKBListSafe(curlLine string) (KBListResponse, error) {
 			// Convert panic to error
 		}
 	}()
+
+	// Decode HTML entities (e.g., &amp; -> &) that may appear when copying cURL from browsers
+	curlLine = html.UnescapeString(curlLine)
 
 	var (
 		urlStr    string
