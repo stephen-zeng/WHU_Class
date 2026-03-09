@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"html"
 	"io"
 	"net/http"
 	"os"
@@ -48,6 +49,9 @@ type KBListResponse struct {
 }
 
 func getKBList(curlLine string) KBListResponse {
+	// Decode HTML entities (e.g., &amp; -> &) that may appear when copying cURL from browsers
+	curlLine = html.UnescapeString(curlLine)
+
 	var (
 		urlStr    string
 		method    = "GET"

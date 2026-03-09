@@ -1,7 +1,11 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 	"time"
 
@@ -25,4 +29,37 @@ func Test(t *testing.T) {
 	event.SetOrganizer("sender@domain", ics.WithCN("This Machine"))
 	event.AddAttendee("reciever or participant", ics.CalendarUserTypeIndividual, ics.ParticipationStatusNeedsAction, ics.ParticipationRoleReqParticipant, ics.WithRSVP(true))
 	fmt.Println(cal.Serialize())
+}
+
+func TestGetKBListSafe_HTMLEntityDecoding(t *testing.T) {
+	// Track what query parameters the server receives
+	var receivedQuery string
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		receivedQuery = r.URL.RawQuery
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(KBListResponse{})
+	}))
+	defer server.Close()
+
+	// Simulate a cURL command with &amp; (HTML entity) in the URL
+	curlWithAmp := fmt.Sprintf("curl '%s/test?gnmkdm=N2151&amp;layout=default' -H 'Accept: application/json'", server.URL)
+
+	resp, err := getKBListSafe(curlWithAmp)
+	if err != nil {
+		t.Fatalf("getKBListSafe returned unexpected error: %v", err)
+	}
+
+	// Verify the response was parsed (empty is fine, just no error)
+	_ = resp
+
+	// Verify the server received properly decoded query parameters
+	if strings.Contains(receivedQuery, "amp;") {
+		t.Errorf("URL was not properly decoded: query contains 'amp;': %s", receivedQuery)
+	}
+	if !strings.Contains(receivedQuery, "gnmkdm=N2151") {
+		t.Errorf("expected query to contain 'gnmkdm=N2151', got: %s", receivedQuery)
+	}
+	if !strings.Contains(receivedQuery, "layout=default") {
+		t.Errorf("expected query to contain 'layout=default', got: %s", receivedQuery)
+	}
 }
